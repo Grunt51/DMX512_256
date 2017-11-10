@@ -39,7 +39,7 @@ void main(void) {
     if (1 == rdata_complete_flag) {
       rdata_complete_flag = 0;
       for (i = 0; i < 19; i++) {
-        if ((p_b_buffer = strstr(b_command, receive_keywords[i])) != NULL) {
+        if ((p_b_buffer = strstr(g_command, receive_keywords[i])) != NULL) {
           if (1 >= i) {
             sscanf(p_b_buffer, receive_keywords_data[i], &b_command_data,
                    &b_command_data_2);
@@ -53,7 +53,7 @@ void main(void) {
             master_to_slave[current_light_num] =
                 (unsigned char)b_command_data_2;
             if (1 == i) {
-              feedback_information(b_command);
+              uart_send_str(g_command);
             }
             break;
           }
@@ -72,7 +72,7 @@ void main(void) {
               ET0 = 1;
             }
             if (3 == i) {
-              feedback_information(b_command);
+              uart_send_str(g_command);
             }
             break;
           }
@@ -82,7 +82,7 @@ void main(void) {
             spark_PWM_true = (unsigned short)spark_PWM *
                              (unsigned short)spark_cycle; //计算真实占空比信息
             if (5 == i) {
-              feedback_information(b_command);
+              uart_send_str(g_command);
             }
             break;
           }
@@ -92,7 +92,7 @@ void main(void) {
             gradient_cycle_true = (unsigned short)gradient_cycle *
                                   GRADIENT_RESOLUTION; //计算真实渐变信息
             if (7 == i) {
-              feedback_information(b_command);
+              uart_send_str(g_command);
             }
             break;
           }
@@ -102,23 +102,23 @@ void main(void) {
             auto_sleep_true = (unsigned short)auto_sleep *
                               AUTO_SLEEP_RESOLUTION; //计算真实停留时长
             if (9 == i) {
-              feedback_information(b_command);
+              uart_send_str(g_command);
             }
             break;
           }
           case 10: {
             auto_start = (unsigned char)b_command_data; //获取轮询开始位
-            feedback_information(b_command);
+            uart_send_str(g_command);
             break;
           }
           case 11: {
             auto_stop = (unsigned char)b_command_data; //获取轮询停止位
-            feedback_information(b_command);
+            uart_send_str(g_command);
             break;
           }
           case 12: {
             auto_turn = (unsigned char)b_command_data; //得到自动轮询方向信息
-            feedback_information(b_command);
+            uart_send_str(g_command);
             break;
           }
           case 13: {
@@ -127,7 +127,7 @@ void main(void) {
               iap_address_num_old = iap_address_num;
               iap_address_num = auto_start;
               Load_data_quick();
-              feedback_information(b_command);
+              uart_send_str(g_command);
             } else if (auto_status == AUTO_STATUS_OFF) {
               iap_address_num = iap_address_num_old; //恢复原状态
               Load_data_quick();
@@ -143,7 +143,7 @@ void main(void) {
           }
           case 15: {
             light_all_mute = (unsigned char)b_command_data; //得到静音信息
-            feedback_information(b_command);
+            uart_send_str(g_command);
             break;
           }
           case 16: {
@@ -162,7 +162,7 @@ void main(void) {
                          &spark_cycle);
             write_EEPROM(IAP_ADDRESS[iap_address_num], DMX512_256__SIZE + 2, 1,
                          &spark_PWM);
-            feedback_information(b_command);
+            uart_send_str(g_command);
             break;
           }
           case 18: {
