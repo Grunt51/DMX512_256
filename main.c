@@ -1,21 +1,13 @@
 #include "DMX512.h"
 #include "EEPROM.H"
 #include "UART.H"
+#include "initialize.h"
 #include "interrupt.h"
 #include <STC15.H>
 #include <intrins.h>
 #include <stdio.h>
 #include <string.h>
 sbit SN75176_DE = P1 ^ 2;
-short b_command_data, b_command_data_2; //全局命令数据
-unsigned short current_light_num;       //当前控制通道
-char *p_b_buffer;                       //字符串中关键字指针
-unsigned char i;                        //循环临时变量
-void uart_init_1(void);                 //串口1初始化程序
-void uart_init_2(void);                 //串口2初始化程序
-void timer0_init(void);
-void timer3_init(void);
-void timer4_init(void);
 void main(void) {
   unsigned short i = 0;
   SP = 0x80;         //设置栈顶在80H位置
@@ -192,46 +184,4 @@ void main(void) {
       send_signal(send_data_DMX512);
     }
   }
-}
-void uart_init_1(void) // 115200bps@24.000MHz
-{
-  SCON = 0xD0;  // 9位数据,可变波特率
-  AUXR |= 0x40; //定时器1时钟为Fosc,即1T
-  AUXR &= 0xFE; //串口1选择定时器1为波特率发生器
-  TMOD &= 0x0F; //设定定时器1为16位自动重装方式
-  TL1 = 0xCC;   //设定定时初值
-  TH1 = 0xFF;   //设定定时初值
-  ET1 = 0;      //禁止定时器1中断
-  TR1 = 1;      //启动定时器1
-}
-void uart_init_2(void) // 250000bps@24.000MHz
-{
-  S2CON |= 0xD0; // 9位数据,可变波特率
-  AUXR |= 0x04;  //定时器2时钟为Fosc,即1T
-  T2L = 0xE8;    //设定定时初值
-  T2H = 0xFF;    //设定定时初值
-  AUXR |= 0x10;  //启动定时器2
-}
-void timer0_init(void) // 200微秒@24.000MHz
-{
-  AUXR |= 0x80; //定时器时钟1T模式
-  TMOD &= 0xF0; //设置定时器模式
-  TL0 = 0x40;   //设置定时初值
-  TH0 = 0xED;   //设置定时初值
-  TF0 = 0;      //清除TF0标志
-  TR0 = 1;      //定时器0开始计时
-}
-void timer3_init(void) // 3毫秒@24.000MHz
-{
-  T4T3M &= 0xFD; //定时器时钟12T模式
-  T3L = 0x90;    //设置定时初值
-  T3H = 0xE8;    //设置定时初值
-  T4T3M |= 0x08; //定时器3开始计时
-}
-void timer4_init(void) // 2毫秒@24.000MHz
-{
-  T4T3M |= 0x20; //定时器时钟1T模式
-  T4L = 0x80;    //设置定时初值
-  T4H = 0x44;    //设置定时初值
-  T4T3M |= 0x80; //定时器4开始计时
 }
