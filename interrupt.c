@@ -83,10 +83,10 @@ void timer_0(void) interrupt 1 {
   } else if (spark_PWM == SPARK_PWM_MIN) {
     send_data_DMX512 = master_to_slave_off;
   } else {
-    if (timer_0_count < spark_PWM) {
+    if (timer_0_count < spark_PWM_true) {
       timer_0_count++;
       send_data_DMX512 = master_to_slave;
-    } else if (timer_0_count < spark_cycle) {
+    } else if (timer_0_count < spark_cycle_true) {
       timer_0_count++;
       send_data_DMX512 = master_to_slave_off;
     } else {
