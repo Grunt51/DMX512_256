@@ -19,12 +19,12 @@ void uart_init_2(void) // 250000bps@24.000MHz
   T2H = 0xFF;    //设定定时初值
   AUXR |= 0x10;  //启动定时器2
 }
-void timer0_init(void)		//20毫秒@24.000MHz
+void timer0_init(void)		//10毫秒@24.000MHz
 {
 	AUXR &= 0x7F;		//定时器时钟12T模式
 	TMOD &= 0xF0;		//设置定时器模式
-	TL0 = 0xC0;		//设置定时初值
-	TH0 = 0x63;		//设置定时初值
+	TL0 = 0xE0;		//设置定时初值
+	TH0 = 0xB1;		//设置定时初值
 	TF0 = 0;		//清除TF0标志
 	TR0 = 1;		//定时器0开始计时
 }
